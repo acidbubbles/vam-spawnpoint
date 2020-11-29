@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class SpawnPoint : MVRScript
@@ -6,15 +7,21 @@ public class SpawnPoint : MVRScript
 
     public override void Init()
     {
-        var spawnNow = new JSONStorableAction("SpawnNow", SpawnNow);
+        var spawnNow = new JSONStorableAction("Spawn Now", SpawnNow);
         RegisterAction(spawnNow);
+        var btn = CreateButton("Spawn Now");
+        spawnNow.dynamicButton = btn;
 
-        _spawnOnEnable = new JSONStorableBool("SpawnOnEnable", false);
+        _spawnOnEnable = new JSONStorableBool("Spawn On Enable", false);
         RegisterBool(_spawnOnEnable);
+        CreateToggle(_spawnOnEnable, true);
+
+        StartCoroutine(InitDeferred());
     }
 
-    public void OnEnable()
+    private IEnumerator InitDeferred()
     {
+        yield return new WaitForEndOfFrame();
         if(_spawnOnEnable.val)
             SpawnNow();
     }
