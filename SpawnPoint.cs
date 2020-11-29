@@ -29,13 +29,17 @@ public class SpawnPoint : MVRScript
     private void SpawnNow()
     {
         var root = containingAtom.mainController;
+        var cameraTransform = SuperController.singleton.centerCameraTarget.transform;
         var navigationRigTransform = SuperController.singleton.navigationRig.transform;
-        var targetPosition = root.control.position;
-        var rigPosition = navigationRigTransform.position;
-        var targetRotation = root.control.eulerAngles;
-        var rigRotation = navigationRigTransform.eulerAngles;
 
-        navigationRigTransform.position = new Vector3(targetPosition.x, rigPosition.y, targetPosition.z);
-        navigationRigTransform.eulerAngles = new Vector3(rigRotation.x, targetRotation.y, rigRotation.z);
+        var targetRotation = root.control.eulerAngles;
+        var cameraRotation = cameraTransform.rotation;
+        var rigRotation = navigationRigTransform.eulerAngles;
+        navigationRigTransform.eulerAngles = new Vector3(rigRotation.x, targetRotation.y + (cameraRotation.x - rigRotation.x), rigRotation.z);
+
+        var targetPosition = root.control.position;
+        var cameraPosition = cameraTransform.position;
+        var rigPosition = navigationRigTransform.position;
+        navigationRigTransform.position = new Vector3(targetPosition.x - (cameraPosition.x - rigPosition.x), rigPosition.y, targetPosition.z - (cameraPosition.z - rigPosition.z));
     }
 }
