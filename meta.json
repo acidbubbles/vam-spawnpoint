@@ -3,10 +3,10 @@
    "creatorName" : "AcidBubbles",
    "packageName" : "SpawnPoint",
    "includeVersionsInReferences" : "true", 
-   "description" : "v0.0.0 SpawnPoint Description",
-   "credits" : "", 
-   "instructions" : "", 
-   "promotionalLink" : "https://github.com/AcidBubbles/SpawnPoint",
+   "description" : "v0.0.0 Moves the player to a specific location, either on load or with a trigger",
+   "credits" : "SpaceDog for the idea!",
+   "instructions" : "Add the plugin to an empty, and align the X axis (blue arrow) towards where you want the player to look.",
+   "promotionalLink" : "https://www.patreon.com/acidbubbles",
    "programVersion" : "1.19.0.5", 
    "contentList" : [ 
       "Custom\\Scripts\\AcidBubbles\\SpawnPoint\\SpawnPoint.cs"

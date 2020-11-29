@@ -18,8 +18,8 @@ jobs:
     - name: Zip the release package
       id: zip
       run: |
-        mkdir -p publish/Custom/Scripts/acidbubbles/vam-spawnpoint
-        cp *.cs publish/Custom/Scripts/acidbubbles/vam-spawnpoint/
+        mkdir -p publish/Custom/Scripts/AcidBubbles/SpawnPoint
+        cp *.cs publish/Custom/Scripts/AcidBubbles/SpawnPoint/
         cp meta.json publish/
         sed -i 's/v0.0.0/${{ steps.get_version.outputs.VERSION }}/' publish/meta.json
         cd publish
