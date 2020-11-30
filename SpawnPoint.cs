@@ -28,18 +28,19 @@ public class SpawnPoint : MVRScript
 
     private void SpawnNow()
     {
-        var root = containingAtom.mainController;
-        var cameraTransform = SuperController.singleton.centerCameraTarget.transform;
-        var navigationRigTransform = SuperController.singleton.navigationRig.transform;
+        var sc = SuperController.singleton;
+        sc.ResetNavigationRigPositionRotation();
 
-        var targetRotation = root.control.eulerAngles;
-        var cameraRotation = cameraTransform.rotation;
-        var rigRotation = navigationRigTransform.eulerAngles;
-        navigationRigTransform.eulerAngles = new Vector3(rigRotation.x, targetRotation.y + (cameraRotation.x - rigRotation.x), rigRotation.z);
+        var targetTransform = containingAtom.mainController.control;
+        var navigationRigTransform = sc.navigationRig.transform;
+        var targetRotation = targetTransform.eulerAngles;
+        var targetPosition = targetTransform.position;
+        var monitorCenterCameraTransform = sc.MonitorCenterCamera.transform;
 
-        var targetPosition = root.control.position;
-        var cameraPosition = cameraTransform.position;
-        var rigPosition = navigationRigTransform.position;
-        navigationRigTransform.position = new Vector3(targetPosition.x - (cameraPosition.x - rigPosition.x), rigPosition.y, targetPosition.z - (cameraPosition.z - rigPosition.z));
+        navigationRigTransform.eulerAngles = new Vector3(0, targetRotation.y, 0);
+        monitorCenterCameraTransform.eulerAngles = targetRotation;
+        monitorCenterCameraTransform.localEulerAngles = new Vector3(monitorCenterCameraTransform.localEulerAngles.x, 0, 0);
+        sc.playerHeightAdjust += (targetPosition.y - sc.centerCameraTarget.transform.position.y);
+        navigationRigTransform.position = new Vector3(targetPosition.x, 0, targetPosition.z);
     }
 }
