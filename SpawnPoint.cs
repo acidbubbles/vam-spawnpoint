@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class SpawnPoint : MVRScript
 {
+    private Atom _containingAtom;
     private JSONStorableBool _spawnOnEnable;
+    private JSONStorableBool _isSpawnPointHost;
 
     public override void Init()
     {
+        _containingAtom = containingAtom;
+
         var spawnNow = new JSONStorableAction("Spawn Now", SpawnNow);
         RegisterAction(spawnNow);
         var btn = CreateButton("Spawn Now");
@@ -27,6 +31,21 @@ public class SpawnPoint : MVRScript
         yield return new WaitForEndOfFrame();
         if(_spawnOnEnable.val)
             SpawnNow();
+    }
+
+    private void OnEnable()
+    {
+        if (_containingAtom == null) return;
+        if (_containingAtom.IsBoolJSONParam("IsSpawnPointHost")) return;
+        _isSpawnPointHost = new JSONStorableBool("IsSpawnPointHost", true);
+        _containingAtom.RegisterBool(_isSpawnPointHost);
+    }
+
+    private void OnDisable()
+    {
+        if (_isSpawnPointHost == null) return;
+        _containingAtom.DeregisterBool(_isSpawnPointHost);
+        _isSpawnPointHost = null;
     }
 
     private void SpawnNow()
