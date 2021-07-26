@@ -24,6 +24,9 @@ public class SpawnPoint : MVRScript
         SuperController.singleton.BroadcastMessage("OnActionsProviderAvailable", this, SendMessageOptions.DontRequireReceiver);
 
         StartCoroutine(InitDeferred());
+
+        if (enabled)
+            OnEnable();
     }
 
     private IEnumerator InitDeferred()
