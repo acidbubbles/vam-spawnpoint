@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnPoint : MVRScript
@@ -15,6 +16,8 @@ public class SpawnPoint : MVRScript
         _spawnOnEnable = new JSONStorableBool("Spawn On Enable", false);
         RegisterBool(_spawnOnEnable);
         CreateToggle(_spawnOnEnable, true);
+
+        SuperController.singleton.BroadcastMessage("OnActionsProviderAvailable", this, SendMessageOptions.DontRequireReceiver);
 
         StartCoroutine(InitDeferred());
     }
@@ -42,5 +45,15 @@ public class SpawnPoint : MVRScript
         monitorCenterCameraTransform.localEulerAngles = new Vector3(monitorCenterCameraTransform.localEulerAngles.x, 0, 0);
         sc.playerHeightAdjust += (targetPosition.y - sc.centerCameraTarget.transform.position.y);
         navigationRigTransform.position = new Vector3(targetPosition.x, 0, targetPosition.z);
+    }
+
+    public void OnBindingsListRequested(List<object> bindings)
+    {
+        bindings.Add(new JSONStorableAction("Spawn", SpawnNow));
+    }
+
+    public void OnDestroy()
+    {
+        SuperController.singleton.BroadcastMessage("OnActionsProviderDestroyed", this, SendMessageOptions.DontRequireReceiver);
     }
 }
