@@ -56,17 +56,25 @@ public class SpawnPoint : MVRScript
         var sc = SuperController.singleton;
         sc.ResetNavigationRigPositionRotation();
 
-        var targetTransform = containingAtom.mainController.control;
         var navigationRigTransform = sc.navigationRig.transform;
+
+        var targetTransform = containingAtom.mainController.control;
         var targetRotation = targetTransform.eulerAngles;
         var targetPosition = targetTransform.position;
-        var monitorCenterCameraTransform = sc.MonitorCenterCamera.transform;
+
+        var navigationRigPosition = navigationRigTransform.position;
+        var centerCameraTransform = sc.centerCameraTarget.transform;
+        var centerCameraPosition = centerCameraTransform.position;
+
+        var teleportPosition = targetPosition + (navigationRigPosition - centerCameraPosition);
 
         navigationRigTransform.eulerAngles = new Vector3(0, targetRotation.y, 0);
+        navigationRigTransform.position = new Vector3(teleportPosition.x, 0, teleportPosition.z);
+        sc.playerHeightAdjust += (targetPosition.y - centerCameraPosition.y);
+
+        var monitorCenterCameraTransform = sc.MonitorCenterCamera.transform;
         monitorCenterCameraTransform.eulerAngles = targetRotation;
         monitorCenterCameraTransform.localEulerAngles = new Vector3(monitorCenterCameraTransform.localEulerAngles.x, 0, 0);
-        sc.playerHeightAdjust += (targetPosition.y - sc.centerCameraTarget.transform.position.y);
-        navigationRigTransform.position = new Vector3(targetPosition.x, 0, targetPosition.z);
     }
 
     public void OnBindingsListRequested(List<object> bindings)
