@@ -59,16 +59,14 @@ public class SpawnPoint : MVRScript
         var navigationRigTransform = sc.navigationRig.transform;
 
         var targetTransform = containingAtom.mainController.control;
+
         var targetRotation = targetTransform.eulerAngles;
-        var targetPosition = targetTransform.position;
-
-        var navigationRigPosition = navigationRigTransform.position;
-        var centerCameraTransform = sc.centerCameraTarget.transform;
-        var centerCameraPosition = centerCameraTransform.position;
-
-        var teleportPosition = targetPosition + (navigationRigPosition - centerCameraPosition);
-
         navigationRigTransform.eulerAngles = new Vector3(0, targetRotation.y, 0);
+
+        var targetPosition = targetTransform.position;
+        var centerCameraPosition = sc.centerCameraTarget.transform.position;
+        var teleportPosition = targetPosition + (navigationRigTransform.position - centerCameraPosition);
+
         navigationRigTransform.position = new Vector3(teleportPosition.x, 0, teleportPosition.z);
         sc.playerHeightAdjust += (targetPosition.y - centerCameraPosition.y);
 
