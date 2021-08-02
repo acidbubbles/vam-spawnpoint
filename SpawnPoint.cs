@@ -32,6 +32,11 @@ public class SpawnPoint : MVRScript
     private IEnumerator InitDeferred()
     {
         yield return new WaitForEndOfFrame();
+        if (!enabled) yield break;
+        if(_spawnOnEnable.val)
+            SpawnNow();
+        yield return 0;
+        if (!enabled) yield break;
         if(_spawnOnEnable.val)
             SpawnNow();
     }
