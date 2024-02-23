@@ -8,6 +8,8 @@ public class SpawnPoint : MVRScript
     private JSONStorableBool _spawnOnEnable;
     private JSONStorableBool _isSpawnPointHost;
 
+    private JSONStorableBool _enableUpdatePlayerHeightAdjust;
+
     public override void Init()
     {
         _containingAtom = containingAtom;
@@ -21,6 +23,10 @@ public class SpawnPoint : MVRScript
         RegisterBool(_spawnOnEnable);
         CreateToggle(_spawnOnEnable, true);
 
+        _enableUpdatePlayerHeightAdjust = new JSONStorableBool("Enable Update Player Height Adjust", true);
+        RegisterBool(_enableUpdatePlayerHeightAdjust);
+        CreateToggle(_enableUpdatePlayerHeightAdjust, true);
+
         SuperController.singleton.BroadcastMessage("OnActionsProviderAvailable", this, SendMessageOptions.DontRequireReceiver);
 
         StartCoroutine(InitDeferred());
@@ -33,11 +39,11 @@ public class SpawnPoint : MVRScript
     {
         yield return new WaitForEndOfFrame();
         if (!enabled) yield break;
-        if(_spawnOnEnable.val)
+        if (_spawnOnEnable.val)
             SpawnNow();
         yield return 0;
         if (!enabled) yield break;
-        if(_spawnOnEnable.val)
+        if (_spawnOnEnable.val)
             SpawnNow();
     }
 
@@ -73,7 +79,11 @@ public class SpawnPoint : MVRScript
         var teleportPosition = targetPosition + (navigationRigTransform.position - centerCameraPosition);
 
         navigationRigTransform.position = new Vector3(teleportPosition.x, 0, teleportPosition.z);
-        sc.playerHeightAdjust += (targetPosition.y - centerCameraPosition.y);
+
+        if (_enableUpdatePlayerHeightAdjust.val)
+        {
+            sc.playerHeightAdjust += (targetPosition.y - centerCameraPosition.y);
+        }
 
         var monitorCenterCameraTransform = sc.MonitorCenterCamera.transform;
         monitorCenterCameraTransform.eulerAngles = targetRotation;
